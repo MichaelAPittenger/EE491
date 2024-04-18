@@ -71,11 +71,25 @@ bool isDataCorrect(){
 //Emergency response
 void emergencyResponse(){
   //activate motor()
+  motorInput(True);
+  //activate LEDs
+  LEDInput(True);
+  //activate haptic
+  hapticInput(True);
+  //activate speaker
+  speakerInput(True);
+  return;
 }
 
 //motor to inflate bag
-void motorInput(){
-  //ON or OFF
+void motorInput(bool Mode){
+  if Mode == True{
+    //turn motor on
+  }
+  else{
+    //turn motor off
+  }
+  return;
 }
 
 //accelerometer
@@ -93,16 +107,31 @@ int getButton(){
 }
 
 //LEDs
-void LEDInput(){
-  
+void LEDInput(bool Mode){
+  if Mode == True{
+    //LEDs on
+  }
+  else{
+    //LEDs off
+  }
 }
 
 //Speaker
-void speakerInput(){
-  
+void speakerInput(bool Mode){
+  if Mode == True{
+    //speaker on
+  }
+  else{
+    //speaker off
+  }
 }
 
 //haptic motor
-void hapticInput(){
-  
+void hapticInput(bool Mode){
+  if Mode == True{
+    //haptic on
+  }
+  else{
+    //haptic off
+  }
 }
