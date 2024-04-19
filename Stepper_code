@@ -1,0 +1,17 @@
+1.	#include <Stepper.h>  https://www.seeedstudio.com/blog/2019/03/04/driving-a-28byj-48-stepper-motor-with-a-uln2003-driver-board-and-arduino/
+2.	
+3.	#define STEPS 2038 // the number of steps in one revolution of your motor (28BYJ-48)
+4.	
+5.	Stepper stepper(STEPS, 8, 10, 9, 11);
+6.	
+7.	void setup() {
+8.	// nothing to do
+9.	}
+10.	
+11.	void loop() {
+12.	stepper.setSpeed(1); // 1 rpm
+13.	stepper.step(2038); // do 2038 steps -- corresponds to one revolution in one minute
+14.	delay(1000); // wait for one second
+15.	stepper.setSpeed(6); // 6 rpm
+16.	stepper.step(-2038); // do 2038 steps in the other direction with faster speed -- corresponds to one revolution in 10 seconds
+17.	}
