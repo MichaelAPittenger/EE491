@@ -72,7 +72,15 @@ void runMode(int mode) {
 }
 //Standby
 void standby() {
-  
+  //turn off motor()
+  motorInput(False);
+  //turn off LEDs
+  LEDInput(False);
+  //turn off haptic
+  hapticInput(False);
+  //turn off speaker
+  speakerInput(False);
+  return;
 }
 
 //Vital reading mode
@@ -95,7 +103,7 @@ void checkUser() {
 
 //Emergency response
 void emergencyResponse(){
-  //activate motor()
+  //activate motor
   motorInput(True);
   //activate LEDs
   LEDInput(True);
