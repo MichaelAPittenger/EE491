@@ -43,17 +43,18 @@ void loop() {
   if(buttonState != lastButtonState){
     if(buttonState == HIGH){
       mode = (mode + 1) % 3;
-      switchMode(mode);
       lastButtonState = buttonState;
     }
   }
+  runMode(mode);
 
 }
 
 //modes
-void swtichMode(int mode) {
+void runMode(int mode) {
   case 0:
     //standby mode
+    readVitals();
   case 1:
     //vital read mode
   case 2:
