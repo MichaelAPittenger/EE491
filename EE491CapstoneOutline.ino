@@ -6,38 +6,32 @@
 #include "Adafruit_DRV2605.h"
 
 
-//variables # inputs & # outputs
+//pins # inputs & # outputs
 //inputs
-int button1 = 
-int button2 = 
-int accelerometer
-int oximeter
+const int buttonPin
+const int accelerometer
+const int oximeter
 //outputs
-int LEDs
-int haptic
-int motorR
-int motorG
-int motorB
-int motorBlack
-int speaker
+const int LEDs
+const int haptic
+const int speaker
 
+//variables
+int buttonState = 0;
+int lastButtonState = 0;
+int mode = 0;
 
 //initialize functions
 
 void setup() {
   // put your setup code here, to run once:
   //inputs
-  pinMode(button1, INPUT);
-  pinMode(button2, INPUT);
+  pinMode(buttonPin, INPUT);
   pinMode(accelerometer, INPUT);
   pinMode(oximeter, INPUT);
   //outputs
   pinMode(LEDs, OUTPUT);
   pinMode(haptic, OUTPUT);
-  pinMode(motorR, OUTPUT);
-  pinMode(motorG, OUTPUT);
-  pinMode(motorB, OUTPUT);
-  pinMode(motorBlack, OUTPUT);
   pinMode(speaker, OUTPUT);
   
   Serial.begin(9600);
@@ -45,26 +39,38 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-  
+  buttonState = digitalRead(buttonPin);
+  if(buttonState != lastButtonState){
+    if(buttonState == HIGH){
+      mode = (mode + 1) % 3;
+      switchMode(mode);
+      lastButtonState = buttonState;
+    }
+  }
 
 }
 
 //modes
-void Modes(){
-  //standby or
-  //vital read or
-  //check on user
-  //emergency
+void swtichMode(int mode) {
+  case 0:
+    //standby mode
+  case 1:
+    //vital read mode
+  case 2:
+    //test mode
+    //emergency mode
 }
 //Standby
 
 //Vital reading mode
+void readVitals() {
+
+}
 
 //check on user
 
 //Compare data
-bool isDataCorrect(){
+bool isDataCorrect() {
   
 }
 
@@ -82,7 +88,7 @@ void emergencyResponse(){
 }
 
 //motor to inflate bag
-void motorInput(bool Mode){
+void motorInput(bool Mode) {
   if Mode == True{
     //turn motor on
   }
@@ -97,17 +103,17 @@ void motorInput(bool Mode){
 //oximeter
 
 //LCD Screen
-void LCDDisplay(){
+void LCDDisplay() {
   
 }
 
 //getButton
-int getButton(){
+int getButton() {
   //return int
 }
 
 //LEDs
-void LEDInput(bool Mode){
+void LEDInput(bool Mode) {
   if Mode == True{
     //LEDs on
   }
@@ -117,7 +123,7 @@ void LEDInput(bool Mode){
 }
 
 //Speaker
-void speakerInput(bool Mode){
+void speakerInput(bool Mode) {
   if Mode == True{
     //speaker on
   }
@@ -127,7 +133,7 @@ void speakerInput(bool Mode){
 }
 
 //haptic motor
-void hapticInput(bool Mode){
+void hapticInput(bool Mode) {
   if Mode == True{
     //haptic on
   }
