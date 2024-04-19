@@ -8,7 +8,8 @@
 
 //pins # inputs & # outputs
 //inputs
-const int buttonPin
+const int buttonPin1
+const int buttonPin2
 const int accelerometer
 const int oximeter
 //outputs
@@ -17,9 +18,14 @@ const int haptic
 const int speaker
 
 //variables
-int buttonState = 0;
-int lastButtonState = 0;
+//swtich between modes button
+int buttonState1 = 0;
+int lastButtonState1 = 0;
 int mode = 0;
+
+//userCheck button
+int buttonState2 = 0;
+int lastButtonState2 = 0;
 
 //initialize functions
 
@@ -39,12 +45,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  buttonState = digitalRead(buttonPin);
-  if(buttonState != lastButtonState){
-    if(buttonState == HIGH){
-      mode = (mode + 1) % 3;
-      lastButtonState = buttonState;
+  buttonState1 = digitalRead(buttonPin);
+  if(buttonState1 != lastButtonState1){
+    if(buttonState1 == HIGH){
+      mode = (mode + 1) % 4;
+      lastButtonState1 = buttonState1;
     }
+    delay(50); //debounce delay
   }
   runMode(mode);
 
@@ -54,25 +61,36 @@ void loop() {
 void runMode(int mode) {
   case 0:
     //standby mode
-    readVitals();
+    standby();
   case 1:
     //vital read mode
+    readVitals();
   case 2:
     //test mode
     //emergency mode
+    checkUser();
 }
 //Standby
+void standby() {
+  
+}
 
 //Vital reading mode
 void readVitals() {
-
+  //read vitals
+  //is data correct?
 }
 
 //check on user
 
 //Compare data
-bool isDataCorrect() {
-  
+bool isDataCorrect(int avgBPM, int avgO) {
+  //compare to certain values
+}
+
+void checkUser() {
+  //check if buttons are pressed within certain time (counter)
+  //if buttons not pressed, activate emergency response
 }
 
 //Emergency response
