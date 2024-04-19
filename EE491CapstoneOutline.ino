@@ -48,7 +48,7 @@ void loop() {
   buttonState1 = digitalRead(buttonPin);
   if(buttonState1 != lastButtonState1){
     if(buttonState1 == HIGH){
-      mode = (mode + 1) % 4;
+      mode = (mode + 1) % 3;
       lastButtonState1 = buttonState1;
     }
     delay(50); //debounce delay
