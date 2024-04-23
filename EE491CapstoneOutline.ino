@@ -8,14 +8,14 @@
 
 //pins # inputs & # outputs
 //inputs
-const int buttonPin1
-const int buttonPin2
-const int accelerometer
-const int oximeter
+const int buttonPin1 = 1;
+const int buttonPin2 = 2;
+const int accelerometer = 3;
+const int oximeter = 4;
 //outputs
-const int LEDs
-const int haptic
-const int speaker
+const int LEDs = 5;
+const int haptic = 6;
+const int speaker = 7;
 
 //variables
 //swtich between modes button
@@ -32,7 +32,8 @@ int lastButtonState2 = 0;
 void setup() {
   // put your setup code here, to run once:
   //inputs
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin1, INPUT);
+  pinMode(buttonPin2, INPUT);
   pinMode(accelerometer, INPUT);
   pinMode(oximeter, INPUT);
   //outputs
@@ -45,7 +46,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  buttonState1 = digitalRead(buttonPin);
+  buttonState1 = digitalRead(buttonPin1);
   if(buttonState1 != lastButtonState1){
     if(buttonState1 == HIGH){
       mode = (mode + 1) % 3;
@@ -59,27 +60,32 @@ void loop() {
 
 //modes
 void runMode(int mode) {
-  case 0:
-    //standby mode
-    standby();
-  case 1:
-    //vital read mode
-    readVitals();
-  case 2:
-    //test mode
-    //emergency mode
-    checkUser();
+  switch(mode){
+    case 0:
+      //standby mode
+      standby();
+      break;
+    case 1:
+      //vital read mode
+      readVitals();
+      break;
+    case 2:
+      //test mode
+      //emergency mode
+      checkUser();
+      break;
+  }
 }
 //Standby
 void standby() {
   //turn off motor()
-  motorInput(False);
+  motorInput(false);
   //turn off LEDs
-  LEDInput(False);
+  LEDInput(false);
   //turn off haptic
-  hapticInput(False);
+  hapticInput(false);
   //turn off speaker
-  speakerInput(False);
+  speakerInput(false);
   return;
 }
 
@@ -104,19 +110,19 @@ void checkUser() {
 //Emergency response
 void emergencyResponse(){
   //activate motor
-  motorInput(True);
+  motorInput(true);
   //activate LEDs
-  LEDInput(True);
+  LEDInput(true);
   //activate haptic
-  hapticInput(True);
+  hapticInput(true);
   //activate speaker
-  speakerInput(True);
+  speakerInput(true);
   return;
 }
 
 //motor to inflate bag
 void motorInput(bool Mode) {
-  if Mode == True{
+  if (Mode == true) {
     //turn motor on
   }
   else{
@@ -141,7 +147,7 @@ int getButton() {
 
 //LEDs
 void LEDInput(bool Mode) {
-  if Mode == True{
+  if (Mode == true) {
     //LEDs on
   }
   else{
@@ -151,7 +157,7 @@ void LEDInput(bool Mode) {
 
 //Speaker
 void speakerInput(bool Mode) {
-  if Mode == True{
+  if (Mode == true) {
     //speaker on
   }
   else{
@@ -161,7 +167,7 @@ void speakerInput(bool Mode) {
 
 //haptic motor
 void hapticInput(bool Mode) {
-  if Mode == True{
+  if (Mode == true) {
     //haptic on
   }
   else{
