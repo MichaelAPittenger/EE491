@@ -1,4 +1,3 @@
-//https://learn.adafruit.com/adafruit-drv2605-haptic-controller-breakout/arduino-code
 #include <Wire.h>
 #include "Adafruit_DRV2605.h"
 
@@ -19,10 +18,10 @@ void setup() {
   drv.setMode(DRV2605_MODE_INTTRIG); 
 }
 
-//change effect type
-uint8_t effect = 1;
+uint8_t effect = 89;
 
 void loop() {
+  Serial.print("Effect #"); Serial.println(effect);
 
   // set the effect to play
   drv.setWaveform(0, effect);  // play effect 
@@ -33,4 +32,6 @@ void loop() {
 
   // wait a bit
   delay(500);
+
+  if (effect > 117) effect = 1;
 }
