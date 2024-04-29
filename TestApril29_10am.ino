@@ -6,9 +6,16 @@
 #include <Wire.h>
 #include "Adafruit_DRV2605.h"
 #include <Stepper.h>
-#define STEPS 2038 // the number of steps in one revolution of your motor (28BYJ-48)
 #include "MAX30105.h" // Include MAX30105 sensor library
 #include "spo2_algorithm.h" // Include SpO2 calculation algorithm
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define STEPS 2038 // the number of steps in one revolution of your motor (28BYJ-48)
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
+#define OLED_RESET -1  // Reset pin is not used with I2C
  
 MAX30105 particleSensor; // Create an instance of the MAX30105 class
 Stepper stepper(STEPS, 8, 10, 9, 11);
@@ -52,6 +59,7 @@ volatile bool modeChanged = false;
 uint8_t effect = 89;
 
 Adafruit_DRV2605 drv;
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 //initialize functions
 void checkVitals(bool var);
@@ -84,6 +92,26 @@ void setup() {
   // default, internal trigger when sending GO command
   drv.setMode(DRV2605_MODE_INTTRIG); 
 
+    // Initialize the display
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {  // Address 0x3C for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+  
+  // Clear the buffer
+  display.clearDisplay();
+  
+  // Set text size and color
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  
+  // Display initial text
+  display.setCursor(0, 0);
+  display.println(F("Power on!"));
+  
+  // Display on OLED
+  display.display();
+
   //standby
   runMode(0);
 }
@@ -110,11 +138,15 @@ void toggleMode() {
 
 //modes
 void runMode(int mode) {
+  display.clearDisplay();
   switch(mode){
     case 0:
       //standby mode
       Serial.print("Standy Mode");
       Serial.print('\n');
+      display.setCursor(0, 0);
+      display.print("STANDBY MODE");
+      display.display();
       digitalWrite(blue, HIGH);
       digitalWrite(green, LOW);
       digitalWrite(yellow, LOW);
@@ -125,6 +157,10 @@ void runMode(int mode) {
       //vital read mode
       Serial.print("Reading Vitals");
       Serial.print('\n');
+      display.setCursor(0, 0);
+      display.print("READING VITALS");
+      display.display();
+      digitalWrite(blue, HIGH);
       digitalWrite(blue, LOW);
       digitalWrite(green, HIGH);
       digitalWrite(yellow, LOW);
@@ -136,6 +172,9 @@ void runMode(int mode) {
       //emergency mode
       Serial.print("Check on user");
       Serial.print('\n');
+      display.setCursor(0, 0);
+      display.print("CHECK ON USER");
+      display.display();
       digitalWrite(blue, LOW);
       digitalWrite(green, LOW);
       digitalWrite(yellow, HIGH);
@@ -146,6 +185,9 @@ void runMode(int mode) {
       
       Serial.print("HELP");
       Serial.print('\n');
+      display.setCursor(0, 0);
+      display.print("DROWNING!!!");
+      display.display();
       digitalWrite(blue, LOW);
       digitalWrite(green, LOW);
       digitalWrite(yellow, LOW);
@@ -216,10 +258,6 @@ void checkVitals(bool var) {
       while (1); // Halt execution if sensor not found
     }
  
-//    Serial.println(F("Attach sensor to finger. Press key to start."));
-//    while (Serial.available() == 0); // Wait for user input to proceed
-//    Serial.read(); // Clear the serial buffer
-   
     // Sensor configuration settings
     byte ledBrightness = 60; // LED brightness (0-255)
     byte sampleAverage = 4; // Averaging (1, 2, 4, 8, 16, 32)
@@ -230,7 +268,8 @@ void checkVitals(bool var) {
    
     // Apply configuration settings to the sensor
     particleSensor.setup(ledBrightness, sampleAverage, ledMode, sampleRate, pulseWidth, adcRange);
-     // Collect 100 samples and output raw red and IR data
+    
+    // Collect 100 samples and output raw red and IR data
     for (byte i = 0; i < bufferLength; i++) {
       while (!particleSensor.available()) particleSensor.check(); // Wait for new data
    
@@ -247,6 +286,15 @@ void checkVitals(bool var) {
     // Calculate heart rate and SpO2 from the first 100 samples
     maxim_heart_rate_and_oxygen_saturation(irBuffer, bufferLength, redBuffer, &spo2, &validSPO2, &heartRate, &validHeartRate);
  
+    // Display heart rate and SpO2 values on the OLED display
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.print("Heart Rate: ");
+    display.println(heartRate);
+    display.print("SpO2: ");
+    display.println(spo2);
+    display.display();
+    
     // Continuously update heart rate and SpO2 values with new samples
     while (1) {
       // Shift the last 75 samples to the beginning and fill the remaining with new data
@@ -279,17 +327,23 @@ void checkVitals(bool var) {
         Serial.print(F(", SPO2Valid="));
         Serial.println(validSPO2, DEC);
       }
-  
    
       // Recalculate heart rate and SpO2 with the updated buffer
       maxim_heart_rate_and_oxygen_saturation(irBuffer, bufferLength, redBuffer, &spo2, &validSPO2, &heartRate, &validHeartRate);
   
-      
-      if(heartRate <= 0){
-        
+      // Update OLED display with new heart rate and SpO2 values
+      display.clearDisplay();
+      display.setCursor(0, 0);
+      display.print("Heart Rate: ");
+      display.println(heartRate);
+      display.print("SpO2: ");
+      display.println(spo2);
+      display.display();
+  
+      if (heartRate <= 0) {
         mode = 2;
         break;
-      }      
+      }
     }
   }
 }
@@ -345,7 +399,7 @@ void speakerInput(bool Mode) {
 void hapticInput(bool var) {
   int counter = 0;
   if (var == true) {
-    while(counter < 20){
+    while(counter < 10){
         Serial.print("Effect #"); Serial.println(effect);
   
         // set the effect to play
